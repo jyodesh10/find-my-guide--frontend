@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import baseUrl from '../../../constants/constants';
-import LoadingSpinner from '../../../reusables/LoadingSpinner';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import baseUrl from '../../constants/constants';
 
 
 const Blogs = () => {
@@ -85,7 +85,7 @@ const Blogs = () => {
 
 
     return (
-        <div className='mt-[50px]'>
+        <div>
             <DataTable columns={columns} data={blogs} striped={true}  />
         </div>
     )

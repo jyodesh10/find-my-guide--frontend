@@ -1,7 +1,7 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HiOutlineLogout } from "react-icons/hi";
-import baseUrl from '../../constants/constants';
+import baseUrl from '../constants/constants';
 
 
 function Topbar() {
@@ -39,14 +39,14 @@ function Topbar() {
 
     if (loading) {
         return (
-            <div className='fixed flex h-[50px] justify-between items-center w-screen bg-gray-200'>
+            <div className='flex h-[50px] justify-between items-center w-screen bg-gray-200'>
                 Loading....
             </div>
         )
     } else {
 
         return (
-            <div className='fixed flex h-[50px] justify-between items-center w-screen bg-gray-200'>
+            <nav className='flex h-[50px] justify-between items-center w-screen bg-linear-to-r from-cyan-500 to-blue-500'>
                 <h1 className='pl-4 text-xl font-bold text-gray-800 bg-gray-200'>
                     Hello, {guide.firstname} {guide.lastname}
                 </h1>
@@ -59,7 +59,7 @@ function Topbar() {
                     </button>
                     {/* <img src={user.image} alt="" className='container mr-5 h-[35px] w-[35px] rounded-full'/> */}
                 </div>
-            </div>
+            </nav>
         )
     }
 

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import baseUrl from '../../../constants/constants';
-import LoadingSpinner from '../../../reusables/LoadingSpinner';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import baseUrl from '../../constants/constants';
 
 export const Tours = () => {
 
@@ -78,7 +78,7 @@ export const Tours = () => {
     ];
 
   return (
-    <div className='mt-[50px]'>
+    <div>
       <div className='pt-8 flex items-end justify-end'>
         <button className='pr-6 pl-6 pt-1 pb-1 min-w-[90px] mr-[10px] rounded-md bg-blue-600 text-white hover:bg-blue-500'>
           Add a Tour
