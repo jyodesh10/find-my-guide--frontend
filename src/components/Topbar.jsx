@@ -39,21 +39,21 @@ function Topbar() {
 
     if (loading) {
         return (
-            <div className='flex h-[50px] justify-between items-center w-screen bg-gray-200'>
+            <nav className='flex h-[50px] justify-between items-center w-screen bg-gray-200'>
                 Loading....
-            </div>
+            </nav>
         )
     } else {
 
         return (
-            <nav className='flex h-[50px] justify-between items-center w-screen bg-linear-to-r from-cyan-500 to-blue-500'>
-                <h1 className='pl-4 text-xl font-bold text-gray-800 bg-gray-200'>
+            <nav className='flex h-[50px] justify-between items-center w-screen bg-gray-700 sticky top-0 z-50'>
+                <h1 className='pl-4 text-xl font-bold  text-white'>
                     Hello, {guide.firstname} {guide.lastname}
                 </h1>
                 <div className='flex items-center'>
-                    <button className='flex items-center hover:text-gray-600'>
-                        <HiOutlineLogout className='mr-2' />
-                        <h1 className='mr-6'>
+                    <button className='flex items-center hover:text-gray-100'>
+                        <HiOutlineLogout className='mr-2  text-white' />
+                        <h1 className='mr-6 text-white'>
                             Logout
                         </h1>
                     </button>

@@ -16,8 +16,22 @@ const router = createBrowserRouter([
         element: <PostsHome/>,
     },
     {
-        path: "/home",
+        path: "/dashboard",
         element: <LandingPage/>,
+        children: [
+            {
+                path:"home",
+                element: <LandingPage path={"home"}/>,
+            },
+            {
+                path:"tours",
+                element: <LandingPage path={"tours"}/>,
+            },
+            {
+                path:"blogs",
+                element: <LandingPage path={"blogs"}/>,
+            },
+        ]
     }
 ])
 

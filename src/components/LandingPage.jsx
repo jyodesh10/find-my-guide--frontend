@@ -7,10 +7,11 @@ import Tours from "../pages/tours/Tours";
 import Drawer from "./Drawer";
 import Topbar from "./Topbar";
 
-const LandingPage = () => {
+const LandingPage = (path) => {
 
   const [activeComponent, setActiveComponent] = useState('home');
   const [activeMenuItem, setActiveMenuItem] = useState('home');
+
 
   const handleMenuItemClick = (menuItem) => {
     setActiveComponent(menuItem);
@@ -42,7 +43,7 @@ const LandingPage = () => {
           onMenuItemClick={handleMenuItemClick}
           activeMenuItem={activeMenuItem}
         />
-        <div className='ml-[21%] w-[75%] h-screen pt-[50px] box-border overflow-y-auto'>
+        <div className='ml-[21%] w-[75%] pt-[50px] box-border overflow-y-auto'>
           {renderComponent()}
         </div>
       </div>

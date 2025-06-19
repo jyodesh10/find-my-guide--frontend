@@ -2,12 +2,14 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import TileInputCom from '../../components/TitleInputCom';
 import baseUrl from '../../constants/constants';
 
 
 const Blogs = () => {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [isCreateBlog, setCreateBlog] = useState(false);
 
     const getBlogs = async () => {
 
@@ -84,8 +86,22 @@ const Blogs = () => {
     ];
 
 
+    if(isCreateBlog) {
+        return (
+            <AddEditBlog />
+        )
+    }
+
     return (
         <div>
+            <div className='flex items-end justify-end'>
+            <button 
+                className='pr-6 pl-6 pt-1 pb-1 min-w-[90px] mr-[10px] rounded-md bg-blue-600 text-white hover:bg-blue-500'
+                onClick={() => setCreateBlog(true)}
+            >
+                Create a Blog
+            </button>
+            </div>
             <DataTable columns={columns} data={blogs} striped={true}  />
         </div>
     )
@@ -191,39 +207,6 @@ function AddEditBlog() {
         </>
     )
 }
-
-
-function TileInputCom({ label, value, disabled = false, onChange }) {
-
-    if (label === "Content") {
-        return (
-            <div className="relative w-full min-w-[200px] mb-6">
-                <h1>{label}</h1>
-                <textarea id="message" rows="4" className="block p-3 w-full text-sm rounded-md border border-gray-500"
-                    placeholder="Add  you content..." value={value} onChange={onChange}>
-
-                </textarea>
-
-            </div>
-        )
-    }
-
-    return (
-        <div className="relative w-full min-w-[200px] mb-6">
-            <h1>{label}</h1>
-            <input
-                className="block w-full h-10 p-3 text-gray-900 border border-gray-500 rounded-md focus:border-amber-300  "
-                placeholder={label}
-                disabled={disabled}
-                value={value}
-                onChange={onChange}
-            />
-
-        </div>
-    )
-}
-
-
 
 function ImgInput() {
     return (

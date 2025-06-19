@@ -34,7 +34,7 @@ function LoginPage() {
       if (response.status == 200) {
         localStorage.setItem("accessToken", fetcheddata["accesToken"]);
         localStorage.setItem("id", fetcheddata["id"]);
-        navigate("/home");
+        navigate("/dashboard");
       }
     } catch (error) {
       setloading(false);
@@ -50,7 +50,7 @@ function LoginPage() {
         className="
           flex
           h-screen w-screen
-          bg-linear-to-r from-cyan-500 to-blue-500
+          bg-gray-700
           items-center justify-center
         "
       >
@@ -61,7 +61,7 @@ function LoginPage() {
             p-5
             bg-gray-100
             rounded-2xl
-            shadow-gray-400 shadow-lg
+            shadow-gray-400 shadow-xl
             justify-items-center
             md:w-[400px]
             lg:w-[400px]

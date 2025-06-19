@@ -9,7 +9,7 @@ function Drawer({onMenuItemClick, activeMenuItem}) {
       };
       
   return (
-    <div className='flex-col fixed w-[18%] h-screen bg-gray-200 mt-[50px]'>
+    <div className='flex-col fixed w-[18%] h-screen bg-gray-200'>
         <div className='pl-8 pr-2 pt-10'>
             <div className={menuItemStyle('home')}>
                 <FiHome className='mr-2'/>  
