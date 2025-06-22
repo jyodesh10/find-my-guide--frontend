@@ -1,6 +1,6 @@
 
 
-const TileInputCom = ({ label, value, disabled = false, onChange, islong = false, islabel = true }) => {
+const TileInputCom = ({ label, value, disabled = false, onChange, type="text", islong = false, islabel = true }) => {
 
     if (label === "Content" || islong === true) {
         return (
@@ -24,6 +24,7 @@ const TileInputCom = ({ label, value, disabled = false, onChange, islong = false
             <input
                 className="block w-full h-10 p-3 text-gray-900 border border-gray-500 rounded-md focus:border-amber-300  "
                 placeholder={label}
+                type={type}
                 disabled={disabled}
                 value={value}
                 onChange={onChange}

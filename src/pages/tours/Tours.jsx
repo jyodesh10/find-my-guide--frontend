@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import baseUrl from '../../constants/constants';
+import { showSuccessToast } from '../../utils/CustomToasts';
 import { AddTour } from './AddTour';
 
 export const Tours = () => {
@@ -14,8 +15,6 @@ export const Tours = () => {
   let token = "";
 
   useEffect(() => {
-    id = localStorage.getItem('id');
-    token = localStorage.getItem('accessToken');
     getTours();
   }, [])
 
@@ -23,6 +22,8 @@ export const Tours = () => {
 
     try {
       setLoading(true);
+      id = localStorage.getItem('id');
+      token = localStorage.getItem('accessToken');
       const header =
       {
         'Accept': 'application/json',
@@ -45,6 +46,26 @@ export const Tours = () => {
       setLoading(false);
     }
   }
+
+  const deleteTour = async (tourid) => {
+    try {
+        setLoading(true);
+        const accesstoken = localStorage.getItem('accessToken');
+        const headers = {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + accesstoken
+        }
+        const response = await axios.delete(baseUrl + `api/tours/${tourid}`, {headers: headers} );
+        if (response.status === 200) {
+          showSuccessToast("Tour deleted successfully!");
+          await getTours();
+        }
+    } catch (error) {
+    } finally {
+        setLoading(false);
+    }
+}
 
   if(loading) {
     return (
@@ -72,7 +93,10 @@ export const Tours = () => {
               <button className='py-2 w-[80px] bg-blue-600 rounded-md text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 hover:shadow-blue-400/50'>
                   Edit
               </button>
-              <button className='ml-4 py-2 w-[80px] bg-red-600 rounded-md text-white shadow-lg shadow-red-500/50 hover:bg-red-500 hover:shadow-red-400/50'>
+              <button 
+                  className='ml-4 py-2 w-[80px] bg-red-600 rounded-md text-white shadow-lg shadow-red-500/50 hover:bg-red-500 hover:shadow-red-400/50'
+                  onClick={() => deleteTour(row._id)}
+              >
                   Delete
               </button>
           </div>

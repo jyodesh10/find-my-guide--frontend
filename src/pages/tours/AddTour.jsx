@@ -1,17 +1,114 @@
-import { useRef, useState } from "react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
 import { MdDelete } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import ImgInput from "../../components/ImgInput";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import TileInputCom from "../../components/TitleInputCom";
+import baseUrl from "../../constants/constants";
+import { showErrorToast, showSuccessToast } from "../../utils/CustomToasts";
 
 export const AddTour = () => {
     const [imgs, setimgs] = useState([]);
+    const [guide, setGuide] = useState("");
+    const [title, settitle] = useState("");
+    const [description, setdescription] = useState("");
+    const [itinerary, setitinerary] = useState("");
+    const [price, setprice] = useState(0);
+    const [duration, setduration] = useState("");
+    const [country, setcountry] = useState("");
+    const [region, setregion] = useState("");
+    const [city, setcity] = useState("");
+    const [accessToken, setAccessToken] = useState("");
+    const [loading, setloading] = useState(false);
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
 
-    function deleteEvent(name) {
+
+    useEffect(() => {
+        const id = localStorage.getItem("id");
+        const token = localStorage.getItem("accessToken");
+        setAccessToken(token);
+        setGuide(id);
+    }, [])
+
+    const postTour = async ()  => {
+        try {
+            setloading(true);
+            const formData = new FormData();
+            formData.append('guide', guide);
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('itinerary', itinerary);
+            formData.append('price', price);
+            formData.append('highlights.duration', duration);
+            formData.append('highlights.languages', JSON.stringify(["English"]));
+            formData.append('highlights.specializations', JSON.stringify(["scenic", "Nature"]));
+            formData.append('highlights.location.country', country);
+            formData.append('highlights.location.region', region);
+            formData.append('highlights.location.city', city);
+
+
+            if(imgs.length > 0) {
+                imgs.forEach(img => {   
+                    formData.append('image', img);
+                })
+                /// fix in backend loop upload for list
+
+            }
+
+            const config = {
+                headers : {
+                    Authorization : `Bearer ${accessToken}`
+                }
+            };
+            
+            const response = await axios.post(baseUrl + "api/tours", formData, config);
+
+            if (response.status === 201 || response.status === 200) { // 201 Created is also a success for POST
+                navigate("/dashboard");
+                showSuccessToast("Tour added successfully!");
+                setloading(false);
+                settitle("");
+                setdescription("");
+                setimgs([]);
+                setitinerary("");
+                setprice(0);
+                setduration("");
+                setcountry("");
+                setregion("");
+                setcity("");
+            }
+            console.log(response.data);
+        } catch (error) {
+            showErrorToast(error.message);
+            console.error("Error posting tour:", error);
+            if (error.response) {
+                console.error("Data:", error.response.data);
+                console.error("Status:", error.response.status);
+                console.error("Headers:", error.response.headers);
+            } else if (error.request) {
+                console.error("Request:", error.request);
+            } else {
+                console.error('Error', error.message);
+            }
+        } finally {
+            setloading(false);
+        }
+    }
+
+    function deleteSelectedImg(name) {
         // setimgs(imgs => imgs.filter((img) => img.name == name))
         const newimgs = imgs.filter((img) => img.name !== name)
         setimgs(newimgs)
     }
+    
+    if(loading) {
+        return (
+            <LoadingSpinner/>
+        )
+    }
+
 
     return (
         <div>
@@ -21,25 +118,34 @@ export const AddTour = () => {
             </div>
             <div className="p-8">
                 <TileInputCom
-                label={"Title"}
-                //   value={title}
-                //   onChange={(e) => settitle(e.target.value)}
+                    label={"Title"}
+                    value={title}
+                    onChange={(e) => settitle(e.target.value)}
                 />
                 <TileInputCom
                     label={"Description"}
                     islong={true}
+                    value={description}
+                    onChange={(e) => setdescription(e.target.value)}
                 />
                 <TileInputCom
                     label={"Itinerary"}
                     islong={true}
+                    value={itinerary}
+                    onChange={(e) => setitinerary(e.target.value)}
                 />
                 <TileInputCom
                     label={"Price"}
+                    value={price}
+                    type="number"
+                    onChange={(e) => setprice(e.target.value)}
                 />
                 <h1 className="mb-2 text-lg font-semibold">Highlights</h1>
                 <div className="flex items-center justify-between">
                     <TileInputCom
                         label={"Duration"}
+                        value={duration}
+                        onChange={(e) => setduration(e.target.value)}
                     />
                     <div className="w-10"/>
                     <TileInputCom
@@ -54,16 +160,22 @@ export const AddTour = () => {
                     <TileInputCom
                         label={"Country"}
                         islabel={false}
+                        value={country}
+                        onChange={(e) => setcountry(e.target.value)}
                         />
                     <div className="w-10"/>
                     <TileInputCom
                         label={"Region"}
                         islabel={false}
+                        value={region}
+                        onChange={(e) => setregion(e.target.value)}
                         />
                     <div className="w-10"/>
                     <TileInputCom
                         label={"City"}
                         islabel={false}
+                        value={city}
+                        onChange={(e) => setcity(e.target.value)}
                     />
                 </div>
                 <h1>Image</h1>
@@ -77,7 +189,7 @@ export const AddTour = () => {
                             />
                             <button 
                                 className="absolute top-1 right-1 rounded-full px-1 py-1 border-2 border-gray-400 text-gray-400 text-[15px] hover:text-red-700 hover:border-red-700"
-                                onClick={() => {deleteEvent(img.name)}}
+                                onClick={() => {deleteSelectedImg(img.name)}}
                             >
                                 <MdDelete />
                             </button>
@@ -97,8 +209,9 @@ export const AddTour = () => {
                 />
                 <label htmlFor="">Upload Images</label>
                 <div className='flex justify-end items-end'>
-                    <button className='w-[25%] min-w-[80px] h-10 bg-blue-600 rounded-md text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 hover:shadow-blue-400/50'
-                        // onClick={postBlog}
+                    <button 
+                        className='w-[25%] min-w-[80px] h-10 bg-blue-600 rounded-md text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 hover:shadow-blue-400/50'
+                        onClick={postTour}
                     >
                         Add Tour
                     </button>
