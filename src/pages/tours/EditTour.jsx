@@ -8,7 +8,7 @@ import TileInputCom from "../../components/TitleInputCom";
 import baseUrl from "../../constants/constants";
 import { showErrorToast, showSuccessToast } from "../../utils/CustomToasts";
 
-export const AddTour = () => {
+export const EditTour = () => {
     const [imgs, setimgs] = useState([]);
     const [guide, setGuide] = useState("");
     const [title, settitle] = useState("");

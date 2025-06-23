@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import baseUrl from '../../constants/constants';
 import { showSuccessToast } from '../../utils/CustomToasts';
@@ -13,6 +14,7 @@ export const Tours = () => {
   const [isAddTour, setAddTour]  = useState(false);
   let id = "";
   let token = "";
+  const navigate = useNavigate();
 
   useEffect(() => {
     getTours();
@@ -79,7 +81,7 @@ export const Tours = () => {
           // selector: row => row.image,
           cell: row => (
               row.image[0] 
-              ? <img src={row.image[0]} alt={row.title || "Blog image"} className='h-25 w-35 m-2 bg-gray-200 rounded-2xl' />
+              ? <img src={row.image[0]} alt={row.title || "Blog image"} className='h-25 w-35 m-2 bg-gray-200 rounded-2xl object-contain' />
               : <div className='flex h-25 w-35 m-2 bg-gray-200 rounded-2xl items-center justify-center text-center'>No Image</div>
           ) 
       },
@@ -90,12 +92,15 @@ export const Tours = () => {
       {
           name: 'Actions',
           cell: row => <div className='flex items-center justify-center'>
-              <button className='py-2 w-[80px] bg-blue-600 rounded-md text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 hover:shadow-blue-400/50'>
+              <button 
+                className='py-2 w-[80px] bg-blue-600 rounded-md text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 hover:shadow-blue-400/50'
+                onClick={() => navigate("/dashboard/edit-tour")}
+              >
                   Edit
               </button>
               <button 
-                  className='ml-4 py-2 w-[80px] bg-red-600 rounded-md text-white shadow-lg shadow-red-500/50 hover:bg-red-500 hover:shadow-red-400/50'
-                  onClick={() => deleteTour(row._id)}
+                className='ml-4 py-2 w-[80px] bg-red-600 rounded-md text-white shadow-lg shadow-red-500/50 hover:bg-red-500 hover:shadow-red-400/50'
+                onClick={() => deleteTour(row._id)}
               >
                   Delete
               </button>

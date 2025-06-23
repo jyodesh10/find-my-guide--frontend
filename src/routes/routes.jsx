@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import LandingPage from "../components/LandingPage";
 import PostsHome from "../components/PostsHome";
 import LoginPage from "../pages/login/LoginPage";
+import { EditTour } from "../pages/tours/EditTour";
 
 
 const router = createBrowserRouter([
@@ -32,7 +33,11 @@ const router = createBrowserRouter([
                 element: <LandingPage path={"blogs"}/>,
             },
         ]
-    }
+    },
+    {
+        path:"/dashboard/edit-tour",
+        element: <EditTour/>,
+    },
 ])
 
 export default router;
