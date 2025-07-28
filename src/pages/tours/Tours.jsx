@@ -5,13 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import baseUrl from '../../constants/constants';
 import { showSuccessToast } from '../../utils/CustomToasts';
-import { AddTour } from './AddTour';
 
 export const Tours = () => {
 
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isAddTour, setAddTour]  = useState(false);
   let id = "";
   let token = "";
   const navigate = useNavigate();
@@ -94,7 +92,7 @@ export const Tours = () => {
           cell: row => <div className='flex items-center justify-center'>
               <button 
                 className='py-2 w-[80px] bg-blue-600 rounded-md text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 hover:shadow-blue-400/50'
-                onClick={() => navigate("/dashboard/edit-tour")}
+                onClick={() => navigate(`/dashboard/tours/${row._id}`)}
               >
                   Edit
               </button>
@@ -108,16 +106,13 @@ export const Tours = () => {
       },
   ];
 
-  if(isAddTour) {
-    return (<AddTour/>)
-  }
 
   return (
     <div>
       <div className='flex items-end justify-end'>
         <button 
           className='pr-6 pl-6 pt-1 pb-1 min-w-[90px] mr-[10px] rounded-md bg-blue-600 text-white hover:bg-blue-500'
-          onClick={() => setAddTour(true)}
+          onClick={() => navigate("/dashboard/tours/addtour")}
         >
           Add a Tour
         </button>

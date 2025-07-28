@@ -34,7 +34,7 @@ function LoginPage() {
       if (response.status == 200) {
         localStorage.setItem("accessToken", fetcheddata["accesToken"]);
         localStorage.setItem("id", fetcheddata["id"]);
-        navigate("/dashboard");
+        navigate("dashboard");
       }
     } catch (error) {
       setloading(false);

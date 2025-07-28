@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { MdDelete } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ImgInput from "../../components/ImgInput";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import TileInputCom from "../../components/TitleInputCom";
@@ -10,7 +10,6 @@ import { showErrorToast, showSuccessToast } from "../../utils/CustomToasts";
 
 export const EditTour = () => {
     const [imgs, setimgs] = useState([]);
-    const [guide, setGuide] = useState("");
     const [title, settitle] = useState("");
     const [description, setdescription] = useState("");
     const [itinerary, setitinerary] = useState("");
@@ -21,64 +20,82 @@ export const EditTour = () => {
     const [country, setcountry] = useState("");
     const [region, setregion] = useState("");
     const [city, setcity] = useState("");
-    const [accessToken, setAccessToken] = useState("");
-    const [loading, setloading] = useState(false);
+    const [loading, setloading] = useState(true); // Start in a loading state
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
-
+    const { id } = useParams();
 
     useEffect(() => {
-        const id = localStorage.getItem("id");
-        const token = localStorage.getItem("accessToken");
-        setAccessToken(token);
-        setGuide(id);
-    }, [])
+        const getTour = async () => {
+            try {
+                const token = localStorage.getItem("accessToken");
+                const config = {
+                    headers : {
+                        'Authorization' : `Bearer ${token}`
+                    }
+                };
+                const response = await axios.get(baseUrl + `api/tours/${id}`, config);
+    
+                if(response.status === 200) {
+                    const tour = response.data;
+                    console.log(tour);
+                    settitle(tour.title);
+                    setdescription(tour.description);
+                    setitinerary(tour.itinerary);
+                    setprice(tour.price.$numberDecimal);
+                    setduration(tour.highlights.duration);
+                    setlanguages(tour.highlights.languages.join(', '));
+                    setspecialization(tour.highlights.specializations.join(', ')); 
+                    setcountry(tour.highlights.location.country);
+                    setregion(tour.highlights.location.region);
+                    setcity(tour.highlights.location.city);
+                    
+                }
+            } catch (error) {
+                console.log(error);
+                showErrorToast("Failed to load tour data.");
+                navigate("/dashboard/tours"); // Navigate away if tour can't be loaded
+            } finally {
+                setloading(false);
+            }
+        }
 
-    const postTour = async ()  => {
+        getTour();
+    }, [id, navigate])
+
+    const updateTour = async ()  => {
         try {
             setloading(true);
             const formData = new FormData();
-            formData.append('guide', guide);
+            formData.append('guide', localStorage.getItem("id"));
             formData.append('title', title);
             formData.append('description', description);
             formData.append('itinerary', itinerary);
             formData.append('price', price);
             formData.append('highlights.duration', duration);
-            formData.append('highlights.languages', ["English"]);
-            formData.append('highlights.specializations', ["scenic", "Nature"]);
+            formData.append('highlights.languages', languages.split(',').map(s => s.trim()));
+            formData.append('highlights.specializations', specializations.split(',').map(s => s.trim()));
             formData.append('highlights.location.country', country);
             formData.append('highlights.location.region', region);
             formData.append('highlights.location.city', city);
 
-            imgs.forEach((__, index) => {
-                formData.append('image', imgs[index])
-            })
+            // imgs.forEach((__, index) => {
+            //     formData.append('image', imgs[index])
+            // })
 
+            const token = localStorage.getItem("accessToken");
             const config = {
                 headers : {
-                    Authorization : `Bearer ${accessToken}`
+                    'Authorization' : `Bearer ${token}`
                 }
             };
             
-            const response = await axios.post(baseUrl + "api/tours", formData, config);
+            const response = await axios.put(`${baseUrl}api/tours/${id}`, formData, config);
 
-            if (response.status === 201 || response.status === 200) { // 201 Created is also a success for POST
-                navigate("/dashboard");
-                showSuccessToast("Tour added successfully!");
-                setloading(false);
-                settitle("");
-                setdescription("");
-                setimgs([]);
-                setitinerary("");
-                setprice(0);
-                setduration("");
-                setcountry("");
-                setregion("");
-                setcity("");
-                setlanguages("");
-                setspecialization("");
+            if (response.status === 200) {
+                showSuccessToast("Tour updated successfully!");
+                navigate("/dashboard/tours");
             }
-            console.log(response.data);
         } catch (error) {
             console.error("Error posting tour:", error);
             if (error.response) {
@@ -115,7 +132,7 @@ export const EditTour = () => {
         <div>
         <div className="mx-[12%] mb-[12%] rounded-lg bg-gray-100">
             <div className="w-full p-8 bg-gray-200  rounded-t-lg">
-                <h5 className='font-medium text-3xl text-gray-600'>Add new Tour</h5>
+                <h5 className='font-medium text-3xl text-gray-600'>Edit Tour</h5>
             </div>
             <div className="p-8">
                 <TileInputCom
@@ -216,9 +233,9 @@ export const EditTour = () => {
                 <div className='flex justify-end items-end'>
                     <button 
                         className='w-[25%] min-w-[80px] h-10 bg-blue-600 rounded-md text-white shadow-lg shadow-blue-500/50 hover:bg-blue-500 hover:shadow-blue-400/50'
-                        onClick={postTour}
+                        onClick={updateTour}
                     >
-                        Add Tour
+                        Update Tour
                     </button>
                 </div>
             </div>

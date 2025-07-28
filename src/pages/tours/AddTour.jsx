@@ -63,7 +63,7 @@ export const AddTour = () => {
             const response = await axios.post(baseUrl + "api/tours", formData, config);
 
             if (response.status === 201 || response.status === 200) { // 201 Created is also a success for POST
-                navigate("/dashboard");
+                navigate(-1);
                 showSuccessToast("Tour added successfully!");
                 setloading(false);
                 settitle("");

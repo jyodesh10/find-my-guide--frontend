@@ -39,7 +39,7 @@ function Topbar() {
 
     if (loading) {
         return (
-            <nav className='flex h-[50px] justify-between items-center w-screen bg-gray-200'>
+            <nav className='flex h-[50px] justify-between items-center w-screen bg-gray-700 px-4 font-poppins font-light sticky top-0 z-50 text-white'>
                 Loading....
             </nav>
         )
@@ -47,9 +47,12 @@ function Topbar() {
 
         return (
             <nav className='flex h-[50px] justify-between items-center w-screen bg-gray-700 sticky top-0 z-50'>
-                <h1 className='pl-4 text-xl font-bold  text-white'>
-                    Hello, {guide.firstname} {guide.lastname}
-                </h1>
+                <div className='flex items-start justify-center'>
+                    <img src={guide.image} className=' ml-3 rounded-full h-[30px] w-[30px] object-cover'/>
+                    <h1 className='pl-4 text-xl font-poppins font-light text-white'>
+                        Hello, {guide.firstname} {guide.lastname}
+                    </h1>
+                </div>
                 <div className='flex items-center'>
                     <button className='flex items-center hover:text-gray-100'>
                         <HiOutlineLogout className='mr-2  text-white' />
