@@ -8,7 +8,7 @@ function Drawer() {
     const navigate = useNavigate();
     const location = useLocation();
     const menuItemStyle = (item) => {
-        return `flex items-center m-1 mb-5 font-medium text-xl hover:text-gray-500 ${location.pathname === "/dashboard/"+item ? 'text-red-900' : 'text-gray-700'}`; // Conditional styling
+        return `flex items-center m-1 mb-5 font-medium text-xl hover:text-gray-500 ${location.pathname === "/dashboard/"+item || location.pathname.includes(item) ? 'text-red-900' : 'text-gray-700'}`; // Conditional styling
       };
       
   return (

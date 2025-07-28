@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { dateFormatter } from '../../components/DateFormatter';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import baseUrl from '../../constants/constants';
@@ -7,6 +8,7 @@ import baseUrl from '../../constants/constants';
 const Messages = () => {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getMessages();
@@ -52,7 +54,11 @@ const Messages = () => {
       {messages.map((message)=> {
         dateFormatter(message.messages[message.messages.length-1].createdAt);
         return (
-          <div key={message._id} className='flex px-4 h-[90px] w-[100%] mb-4 bg-gray-50 rounded-xl items-center justify-between hover:bg-gray-100'>
+          <div 
+            key={message._id} 
+            className='flex px-4 h-[90px] w-[100%] mb-4 bg-gray-50 rounded-xl items-center justify-between hover:bg-gray-100'
+            onClick={() => navigate("/dashboard/messages/"+message._id)}
+          >
             <div className="flex items-center">
               {/* Profile pic */}
               <img className="h-[60px] w-[60px] rounded-full bg-amber-200" src={message.user.image}/>

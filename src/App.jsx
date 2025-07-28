@@ -4,9 +4,6 @@ import router from './routes/routes';
 
 function App() {
   return (
-    // <h1 class="text-2xl font-bold text-amber-300 underline">
-    // Hello world!
-    // </h1>
     <>
       <RouterProvider router={router}/>
       <ToastContainer

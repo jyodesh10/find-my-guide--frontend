@@ -4,6 +4,7 @@ import AddBlog from "../pages/blogs/AddBlog";
 import Blogs from "../pages/blogs/Blogs";
 import Home from "../pages/home/Home";
 import LoginPage from "../pages/login/LoginPage";
+import MessageDetails from "../pages/messages/MessageDetails";
 import Messages from "../pages/messages/Messages";
 import NotFound from "../pages/notfound/NotFound";
 import Profile from "../pages/profile/Profile";
@@ -66,7 +67,17 @@ const router = createBrowserRouter([
             },
             {
                 path:"messages",
-                element: <Messages/>,
+                element: <Outlet/>,
+                children: [
+                    {
+                        index: true,
+                        element: <Messages/>,
+                    },
+                    {
+                        path: ":id",
+                        element: <MessageDetails/>,
+                    },
+                ]
             },
             {
                 path:"profile",
