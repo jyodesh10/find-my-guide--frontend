@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -9,8 +9,10 @@ import { showSuccessToast } from '../../utils/CustomToasts';
 const Blogs = () => {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(false); 
+    const [limit, setLimit] = useState(10); 
+    const [totalRows, setTotalRows] = useState(0);
     const navigate = useNavigate();
-    const getBlogs = async () => {
+    const getBlogs = async page => {
 
         try {
             setLoading(true);
@@ -20,13 +22,46 @@ const Blogs = () => {
                 'Content-Type': 'application/json',
                 // 'Authorization': 'Bearer ' + token
             }
-            const res = await axios.get(baseUrl + `api/blog/?limit=8&page=1`,
+            const res = await axios.get(baseUrl + `api/blog/?limit=${limit}&page=${page}`,
                 {
                     headers: header
                 }
             )
             if (res.status === 200) {
                 setBlogs(res.data.data);
+                setTotalRows(res.data.total_count);
+            }
+            console.log(res);
+        } catch (error) {
+            console.log(error);
+
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handlePageChange = page => {
+        getBlogs(page);
+    };
+
+    const handlePerRowsChange  = async (newlimit,page) => {
+
+        try {
+            setLoading(true);
+            const header =
+            {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                // 'Authorization': 'Bearer ' + token
+            }
+            const res = await axios.get(baseUrl + `api/blog/?limit=${newlimit}&page=${page}`,
+                {
+                    headers: header
+                }
+            )
+            if (res.status === 200) {
+                setBlogs(res.data.data);
+                setLimit(newlimit);
             }
             console.log(res);
         } catch (error) {
@@ -51,10 +86,14 @@ const Blogs = () => {
         }
     }
 
+    const rowSelectCritera = useMemo(() => {
+        return (row) => row.device_id === "itnx";
+    }, []);
+
     useEffect(() => {
         // id = localStorage.getItem('id');
         // token = localStorage.getItem('accessToken');
-        getBlogs();
+        getBlogs(1);
     }, [])
 
     if (loading) {
@@ -111,7 +150,34 @@ const Blogs = () => {
                 Create a Blog
             </button>
             </div>
-            <DataTable columns={columns} data={blogs} striped={true} pagination/>
+            <DataTable 
+                columns={columns} 
+                data={blogs} 
+                striped={true} 
+                // pagination 
+                // paginationServer 
+                // paginationPerPage={10}
+                // progressPending={loading} 
+                // paginationTotalRows={totalRows}
+                // selectableRowSelected={rowSelectCritera}
+                // onChangeRowsPerPage={(newlimit, page) => {handlePerRowsChange(newlimit,page)}} 
+                // onChangePage={(page, rows) => {getBlogs(page)}}
+            />
+            <div className='flex items-center justify-center mt-10 mb-10'>
+                <button type="button" className='mr-3 p-2 bg-blue-500 rounded-md text-white hover:bg-blue-700'>
+                    Previous
+                </button>
+                {[...Array(Math.ceil(totalRows / limit))].map((_, i) => (
+                    <button key={i} type="button" className='mr-3 p-2'>{i + 1}</button>
+                ))}
+                <button 
+                    type="button" 
+                    className='ml-3 p-2 bg-blue-500 rounded-md text-white hover:bg-blue-700'
+                    onClick={() => handlePageChange(2)}
+                >
+                    Next
+                </button>
+            </div>
         </div>
     )
 }

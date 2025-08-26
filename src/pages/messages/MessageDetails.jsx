@@ -1,16 +1,23 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import baseUrl from '../../constants/constants';
-function MessageDetails() {
+function MessageDetails(props) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const location = useLocation();
+  const { id } = useParams();
+  const [content, setContent] = useState("");
+  const messagesEndRef = useRef(null);
 
-    const { id } = useParams();
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     getMessagesByid();
+    console.log(location.state);
   }, [])
 
   const header =
@@ -37,26 +44,33 @@ function MessageDetails() {
 
     } finally {
       setLoading(false);
+      scrollToBottom();
+
     }
   }
 
   const sendMessage = async () => {
       const res = await axios.post(baseUrl + `api/chat`,
         {
-            "user": "678800991c25da6c9a9dfa7e",
-            "guide": "67880642a9120ee340901067",
+            "user": location.state.userId,
+            "guide": localStorage.getItem('id'),
             "messages": [
                 {
-                    "content":"Mampakha!!!",
-                    "senderID": "67880642a9120ee340901067"
+                    "content": content,
+                    "senderID": localStorage.getItem('id')
                 }
             ]
         },
         {
           headers: header
         },
-        
       )
+
+      console.log(res.data)
+
+      if(res.status === 200) {
+        getMessagesByid();
+      }
   }
 
   if(loading) {
@@ -66,9 +80,9 @@ function MessageDetails() {
   }
 
   return (
-    <div className='w-full h-[55%] justify-between overflow-y-auto'>
+    <div className='overflow-hidden'>
         {/* message UI */}
-        <div>
+        <div className=' h-[55%] justify-between overflow-y-auto mb-25'>
             {messages.map((message) => {
                 return (
                     <div key={message._id}>
@@ -88,12 +102,13 @@ function MessageDetails() {
                     </div>
                 )
             })}
+            <div ref={messagesEndRef}></div>
         </div>
         {/* send message */}
-        <footer className="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-3/4">
+        <footer className="fixed bg-white border-t border-gray-300 p-4 bottom-0 w-[76%]">
             <div className="flex items-center">
-                <input type="text" placeholder="Type a message..." className="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500"/>
-                <button className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2" onClick={sendMessage}>Send</button>
+                <input type="text" placeholder="Type a message..."  onChange={(e) => setContent(e.target.value)} className="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500"/>
+                <button className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-2" onClick={() => sendMessage(content)}>Send</button>
             </div>
         </footer>
     </div>

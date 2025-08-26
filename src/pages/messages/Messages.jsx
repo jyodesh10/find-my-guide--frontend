@@ -57,7 +57,13 @@ const Messages = () => {
           <div 
             key={message._id} 
             className='flex px-4 h-[90px] w-[100%] mb-4 bg-gray-50 rounded-xl items-center justify-between hover:bg-gray-100'
-            onClick={() => navigate("/dashboard/messages/"+message._id)}
+            onClick={() => navigate("/dashboard/messages/"+message._id, {
+              state: {
+                userId: message.user._id,
+                username: message.user.username,
+                image: message.user.image
+              }
+            })}
           >
             <div className="flex items-center">
               {/* Profile pic */}
